@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Face of Traditions</title>
+  <style>
+    /* ======= 1. PAGINA / ACHTERGROND ======= */
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #290505; 
+      background-image: url('beelden/background-masker-2.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      display: flex;
+      flex-direction: column; 
+      justify-content: flex-start; 
+      align-items: center;
+    }
+
+    .title {
+      margin-top: 30px; 
+      font-family: leida, serif; 
+      font-style: normal;
+      font-weight: 100;
+      font-size: 50px;
+      line-height: 1.2;
+      text-align: center;
+      color: white;
+    }
+
+    /* ======= 2. WIT KADER ======= */
+    .info-container {
+      max-width: 230px; 
+      height: 530px;    
+      background-color: #fff;  
+      color: #000;             
+      border-radius: 25px;     
+      padding: 20px 30px;      
+      margin-top: 5px;        
+      text-align: left;        
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ======= 3. ANIMATIE OP DE AFBEELDING ======= */
+    @keyframes fadeSlideDown {
+  0% {
+      opacity: 0;
+      transform: translateY(-20px); /* Start hoger */
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0); /* Eindigt op de originele plek */
+  }
+}
+
+.info-container img {
+    width: 100px;
+    display: block;
+    margin: 20px auto -20px; /* Voeg extra ruimte boven de afbeelding toe */
+    animation: fadeSlideDown 4s ease forwards; /* Gebruik de nieuwe animatie */
+}
+
+    .info-container h2 {
+      margin: 0; 
+      font-family: leida, serif; 
+      font-weight: bold;
+      font-size: 26px;
+      text-align: center;
+    }
+
+    .info-container h3 {
+      margin: 9px 0 12px; 
+      font-family: Leida, sans-serif;
+      font-size: 14px;
+      color: #290505;
+      font-weight: normal;
+      text-align: center;
+    }
+
+    .info-container p {
+      font-family: neue-haas-grotesk-display, sans-serif;
+      font-size: 15px;
+      line-height: 1.4;
+      color: #000;
+      margin: 0;
+    }
+
+    /* ======= 4. KNOP ======= */
+    .info-container button {
+      background-color: #000000;
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      font-family: Leida, serif;
+      font-size: 16px;
+      padding: 4px 35px;
+      cursor: pointer;
+      transition: background-color 0.5s;
+      display: block;
+      margin: 20px auto 0; 
+    }
+    .info-container button:hover {
+      background-color: #ffffff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Titel -->
+  <h1 class="title">FACE<br>OF<br>TRADITION</h1>
+
+  <!-- Witte container -->
+  <div class="info-container">
+    <!-- Afbeelding (krijgt animatie) -->
+    <img src="beelden/Vuvi-7.png" alt="Vuvi Mask">
+
+    <!-- Titels en tekst -->
+    <div>
+      <h2>Vuvi</h2>
+      <h3>Gabon</h3>
+      <p>
+        The Vuvi mask of Gabon symbolizes harmony, protection, and spiritual connection. Used in ancestral rituals, 
+        it promotes balance and well-being within the community and is celebrated for its simplicity and cultural significance.
+      </p>
+    </div>
+    <!-- Knop onderaan -->
+    <button onclick="window.location.href='camera.html'">Preview</button>
+  </div>
+</body>
+</html>
+
+
+
+

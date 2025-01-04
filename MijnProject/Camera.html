@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Face of Traditions</title>
+
+  <style>
+    /* ==================================
+       1. ALGEMENE PAGINA-STYLING
+       ================================== */
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #290505; /* Donkerrode achtergrond */
+      background-image: url('beelden/background-masker-2.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Starten bovenaan */
+      align-items: center;
+    }
+
+    .title {
+      margin-top: 30px;
+      font-family: leida, serif;
+      font-style: normal;
+      font-weight: 100;
+      font-size: 50px;
+      line-height: 1.2;
+      text-align: center;
+      color: white;
+    }
+
+    /* ==================================
+       2. CAMERA/CANVAS-CONTAINER
+       ================================== */
+    #canvas-container {
+      position: relative;
+      width: 300px;
+      height: 450px;
+      border-radius: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      margin-top: -50px; /* Ruimte tussen titel en canvas */
+    }
+
+    #canvas {
+      display: block;
+      width: 360px;
+      height: 360px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .mask {
+      display: none; /* Verberg alle maskers standaard */
+      position: absolute;
+      width: 150px; /* Kan je aanpassen */
+      height: auto;
+      z-index: 10; /* Zodat maskers boven canvas liggen */
+    }
+
+    /* ==================================
+       3. STYLING MASKER-NAAM
+       ================================== */
+    #mask-name {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .btn-style {
+      background-color: #000000;
+      color: white;
+      border: none;
+      border-radius: 11px;
+      font-family: Leida, serif;
+      font-size: 16px;
+      padding: 8px 35px;
+      cursor: pointer;
+      transition: background-color 0.5s;
+      text-decoration: none; /* geen link-onderstreping */
+      display: inline-block; /* zodat de padding netjes werkt */
+      margin-top: 10px; /* optioneel, extra ruimte */
+    }
+
+    .btn-style:hover {
+      background-color: #ffffff;
+      color: #000;
+      text-decoration: none;
+    }
+
+    /* ==================================
+       4. KNOPPEN (PREVIEW & NEXT)
+       ================================== */
+    #button-container {
+      margin-top: 100px;
+      display: flex;
+      justify-content: center;
+      gap: 110px;
+    }
+
+    /* De preview/next-knoppen */
+    #button-container button {
+      background-color: #000000;
+      color: white;
+      border: none;
+      border-radius: 11px;
+      font-family: Leida, serif;
+      font-size: 16px;
+      padding: 6px 35px;
+      cursor: pointer;
+      transition: background-color 0.5s;
+    }
+
+    #button-container button:hover {
+      background-color: #ffffff;
+      color: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Titel bovenaan -->
+  <h1 class="title">FACE<br>OF<br>TRADITION</h1>
+
+  <!-- Canvas-container (camera + maskers) -->
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+    <!-- Maskers toegevoegd -->
+    <img id="AgboghoMmuo" class="mask" src="beelden/Agbogho Mmuo.png" alt="Agbogho Mmuo">
+    <img id="Bamoun" class="mask" src="beelden/Bamoun.png" alt="Bamoun">
+    <img id="ChokwePwo" class="mask" src="beelden/Chokwe Pwo.png" alt="Chokwe Pwo">
+    <img id="Guro" class="mask" src="beelden/Guro.png" alt="Guro">
+    <img id="Iyoba" class="mask" src="beelden/Iyoba.png" alt="Iyoba">
+    <img id="LubaKifwebe" class="mask" src="beelden/Luba Kifwebe.png" alt="Luba Kifwebe">
+    <img id="Ngil" class="mask" src="beelden/Ngil.png" alt="Ngil">
+    <img id="Vuvi" class="mask" src="beelden/Vuvi.png" alt="Vuvi">
+  </div>
+
+  <!-- Naam van het masker (optie) -->
+  <div id="mask-name"></div>
+
+  <!-- Knoppen: Preview / Next -->
+  <div id="button-container">
+    <button onclick="goToPage('info.html')">Preview</button>
+    <button onclick="goToPage('AgboghoMmuo.html')">Next</button>
+  </div>
+
+  <!-- ==================================
+       SCRIPTS VOOR TEACHABLE MACHINE
+       ================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/gIWhtbACI/";
+
+    let model, webcam, ctx, maxPredictions;
+
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      model = await tmPose.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
+
+      const size = 400;
+      const flip = true;
+      webcam = new tmPose.Webcam(size, size, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      const canvas = document.getElementById("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      ctx = canvas.getContext("2d");
+    }
+
+    async function loop() {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+      const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+      const prediction = await model.predict(posenetOutput);
+
+      let highestScore = 0;
+      let bestClass = null;
+
+      for (let i = 0; i < maxPredictions; i++) {
+        const className = prediction[i].className;
+        const probability = prediction[i].probability;
+        if (probability > highestScore) {
+          highestScore = probability;
+          bestClass = className;
+        }
+      }
+
+      document.querySelectorAll('.mask').forEach(mask => {
+        mask.style.display = 'none';
+      });
+
+      const maskNameContainer = document.getElementById('mask-name');
+      if (bestClass) {
+        const maskToShow = document.getElementById(bestClass);
+        if (maskToShow) {
+          maskToShow.style.display = 'block';
+        }
+        maskNameContainer.innerHTML = `
+          <button class="btn-style" onclick="goToPage('${bestClass}.html')">
+            ${bestClass}
+          </button>
+        `;
+      } else {
+        maskNameContainer.innerHTML = `
+          <button class="btn-style" onclick="goToPage('AgboghoMmuo.html')">
+            Agbogho Mmuo
+          </button>
+        `;
+      }
+
+      drawPose(pose);
+    }
+
+    function drawPose(pose) {
+      if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        if (pose) {
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
+      }
+    }
+
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

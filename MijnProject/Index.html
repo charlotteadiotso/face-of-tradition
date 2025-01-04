@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Face of Traditions</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #290505;
+      background-image: url('beelden/background-masker-1.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .title {
+      font-family: leida, serif;
+      font-style: normal;
+      font-weight: 100;
+      font-size: 55px;
+      text-align: center;
+      color: white;
+      line-height: 1.4;
+    }
+
+    #button-container {
+      margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      gap: 70px;
+    }
+
+    #button-container button {
+      background-color: #000000;
+      color: white;
+      border: none;
+      border-radius: 11px;
+      font-family:leida, serif;
+      font-size: 20px;
+      padding: 6px 45px;
+      cursor: pointer;
+      transition: background-color 0.5s;
+    }
+    #button-container button:hover {
+      background-color: #ffffff;
+      color: #000;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="title">
+    FACE<br>
+    OF<br>
+    TRADITION
+  </div>
+
+  <div id="button-container">
+   
+    <!-- Knop naar index.html -->
+    <button id="next-button" onclick="goToPage('Info.html')">Start</button>
+  </div>
+
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>
+
